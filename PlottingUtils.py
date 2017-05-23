@@ -82,8 +82,40 @@ class Plotter():
         self.close()
         return
             
-        
 
+    pass
+
+class StackPlotter(Plotter):
+    global np
+    import numpy as np
+    def __init__(self, name, batch=True):
+        super(StackPlotter,self).__init__(name, batch)
+        self.total=None
+        self._x=None
+        pass
+
+    def plot(self, x, y, label="_", color=None,fill=True):
+        last=np.zeros(len(y))
+        if self._x==None:
+            self._x=x
+            self.total=np.array(y)
+        else:
+            last=self.total.copy()
+            if x!=self._x: raise ValueError( "inconsistent x-axes ", x, "was ", self._x)
+            self.total+=np.array(y)
+            pass
+
+        # if color is not None:
+        #     self.ax.plot(self._x,self.total,label=label,color=color)
+        # else:
+        #     self.ax.plot(self._x,self.total,label=label)
+        #     pass
+        self.ax.plot(self._x,self.total,label=label,color=color)
+        if fill : self.ax.fill_between(self._x,last,self.total)
+        pass
+    pass
+                
+            
 
 # def plotMany( x, y, fig=None, ax=None, labels=None, colors=None):
 #     if (fig is not None and ax is None) or (fig is None and ax is not None):
