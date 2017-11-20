@@ -106,7 +106,7 @@ def drop_unnamed(df):
         continue
     df.drop(cols, axis=1, inplace=True)
 
-def read_csv(fname, parse_dates=True, ignore_date_cols=[], do_robust_column_names=True, encoding='utf-8', quiet=False, append_to=None, selection=None, sep=',',usecols=None,strip_blank_space=None):
+def read_csv(fname, parse_dates=True, ignore_date_cols=[], do_robust_column_names=True, encoding='utf-8', quiet=False, append_to=None, selection=None, sep=',',usecols=None,strip_blank_space=None, kwargs=None):
     """
     return a dataframe
 
@@ -128,7 +128,10 @@ def read_csv(fname, parse_dates=True, ignore_date_cols=[], do_robust_column_name
 
     strip_blank_space: default None, if list, do df[col]=df[col].map(lambda x: x.strip()) for all col in list, else if not None, strip all leading,trailing
     white space for all columns with 'dtype=='O''
+
+    kwargs: dictionary passed to pd.read_csv, default None
     """
+    if kwargs is None: kwargs={}
     date_cols=[]
     import re
     reg=re.compile('[0-9]{2}:[0-9]{2}:[0-9]{2}')
@@ -148,10 +151,10 @@ def read_csv(fname, parse_dates=True, ignore_date_cols=[], do_robust_column_name
                     date_cols.append(col)
                     pass
                 continue
-            df=pd.read_csv(fname, parse_dates=date_cols, infer_datetime_format=True, encoding=encoding,sep=sep,usecols=usecols)
+            df=pd.read_csv(fname, parse_dates=date_cols, infer_datetime_format=True, encoding=encoding,sep=sep,usecols=usecols,**kwargs)
             pass
         else:
-            df=pd.read_csv(fname,encoding=encoding,sep=sep,usecols=usecols)
+            df=pd.read_csv(fname,encoding=encoding,sep=sep,usecols=usecols,**kwargs)
             pass
         import resource
         if selection is not None:
